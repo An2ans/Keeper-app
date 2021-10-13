@@ -22,6 +22,16 @@ function App() {
     });
   }
 
+  // function editNote(id){
+  //   setNotes((prevNotes) => {
+  //     return prevNotes.filter((newNote, index) => {
+  //       if (index === id){
+  //        return [...prevNotes, newNote ];
+  //       }
+  //     });
+  //   });
+  // }
+
   return (
     <div>
       <Header />
@@ -34,6 +44,7 @@ function App() {
             title={noteItem.title}
             content={noteItem.content}
             delete={deleteNote}
+            // edit={editNote}
           />
         );
       })}
