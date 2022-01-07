@@ -5,9 +5,7 @@ import Fab from "@material-ui/core/Fab";
 import { Zoom } from "@material-ui/core";
 import AcceptIcon from "@material-ui/icons/Check";
 import RefuseIcon from "@material-ui/icons/HighlightOff";
-
-//He añadido funcion de editar al cambiar la propiedad de contentEditable, puedo ditar la note pero los valores title y content no camban
-// Creo que necesito que esos valores en el hook cambien si quiero reverti0r los cambios, lo estoy intentando con la funcion handleChange pero no funka
+import {NoteContainer, NoteTitle, NoteContent} from "./note.styles";
 
 
 function Note(props) {
@@ -17,62 +15,40 @@ function Note(props) {
 
 
   function handleEdit() {
-    if (isEdit === false){
-      setEdit(true);
-    }else if (isEdit === true){
+
+      setEdit(!isEdit);
+
     console.log("note to edit");
-    setEdit(false);
-  }}
-
-  function refuseEdit(){
-    console.log("edit refused");
-
-    setEdit(false);
   }
+
 
   function handleDelete() {
     return props.delete(props.id);
   }
 
 
-if (isEdit === false){
 
-  return (
-    <div className="note">
-      <h1>{props.title}</h1>
-      <p>{props.content}</p>
-      <Zoom in={true}>
-      <Fab onClick={handleDelete}   >
-      <DeleteIcon />
-      </Fab>
-      </Zoom>
-      <Zoom in={true}>
-      <Fab onClick={handleEdit}   >
-      <EditIcon />
-      </Fab>
-      </Zoom>
-
-    </div>
-  );
-}else{
   return(
-    <div className="note">
-      <h1 contentEditable="true"   >{props.title}</h1>
-      <p contentEditable="true"   >{props.content}</p>
-      <Zoom in={true}>
-      <Fab onClick={refuseEdit} >
-      <RefuseIcon />
-      </Fab>
-      </Zoom>
-      <Zoom in={true}>
-      <Fab onClick= {handleEdit} >
-      <AcceptIcon />
-      </Fab>
-      </Zoom>
-
-    </div>
+    <NoteContainer>
+      <form action= "/delete" method="post" >
+        <NoteTitle contentEditable={isEdit ? "true" : "false"}   >{props.title}</NoteTitle>
+        <NoteContent contentEditable={isEdit ? "true" : "false"} >{props.content}</NoteContent>
+        <Zoom in={true}>
+        <Fab onClick={handleDelete} >
+          <RefuseIcon />
+        </Fab>
+        </Zoom>
+      </form>
+      <form action= "/edit" method="post" >
+        <Zoom in={true}>
+        <Fab onClick= {handleEdit} >
+          <AcceptIcon />
+        </Fab>
+        </Zoom>
+      </form>
+    </NoteContainer>
   );
 }
-}
+
 
 export default Note;

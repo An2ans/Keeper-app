@@ -1,11 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import {useSelector, useDispatch} from "react-redux";
+import {GlobalStyle} from "../global-style";
+
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 
 
-function App() {
+
+const App = () => {
+  // const dispatch = useDispatch();
+  // useEffect(() => {
+  //   dispatch(fetchNotesStart());
+  // },[dispatch]);
+  //
+  // const savedNotes = useSelector(selectSavedNotes)
   const [notes, setNotes] = useState([]);
 
   function addNote(note) {
@@ -22,18 +32,10 @@ function App() {
     });
   }
 
-  // function editNote(id){
-  //   setNotes((prevNotes) => {
-  //     return prevNotes.filter((newNote, index) => {
-  //       if (index === id){
-  //        return [...prevNotes, newNote ];
-  //       }
-  //     });
-  //   });
-  // }
 
   return (
     <div>
+      <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
       {notes.map((noteItem, index) => {
@@ -44,13 +46,14 @@ function App() {
             title={noteItem.title}
             content={noteItem.content}
             delete={deleteNote}
-            // edit={editNote}
           />
         );
       })}
       <Footer />
     </div>
   );
+
 }
+
 
 export default App;
