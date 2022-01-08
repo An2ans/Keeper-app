@@ -25,12 +25,12 @@ const CreateArea = (props) => {
   }
 
   function handleClick(event) {
+    event.preventDefault();
     props.onClick(note);
     setNote({
       title: "",
       content: ""
     });
-    event.preventDefault();
     setExpansion(false);
   }
 
