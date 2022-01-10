@@ -1,8 +1,9 @@
 import firebase from "firebase/compat/app";
 import "firebase/compat/firestore";
 import "firebase/compat/auth";
-import { getFirestore, collection, addDoc, Timestamp } from "firebase/firestore";
+import { getFirestore, collection, addDoc, doc,  updateDoc, deleteDoc, Timestamp, query, orderBy, onSnapshot } from "firebase/firestore";
 import { initializeApp } from "firebase/app";
+import Note from "../types/note";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBLbRJXRVsFTW-CfE_ta3CH0qYLX1wV3Rg",
@@ -19,21 +20,48 @@ const db = getFirestore(app)
 export {db};
 
 
-// const addDocument = async (document, collectionRef) => {
-//   const {title, content} = newNote;
-//
-//   try {
-//     await addDoc(collection(db, 'main'), {
-//        title: title,
-//        content: content,
-//        created: Timestamp.now()
-//      });
-//    } catch (err) {
-//        console.log(err);
-//    }
-//
-// };
-//
+export const addDocument = async (collectionRef, doc) => {
+  try {
+    doc.created = Timestamp.now();
+    await addDoc(collection(db, collectionRef),doc);
+   } catch (err) {
+       console.log(err);
+   }
+};
+
+export const deleteDocument = async (id, collectionRef) => {
+  const docToDelete = doc(db, collectionRef, id);
+  try{
+    await deleteDoc(docToDelete);
+  }catch (error){
+    console.log(error);
+  }
+
+};
+
+export const getDocuments = async (collectionRef) => {
+  const q = query(collection(db, collectionRef), orderBy('created', 'desc'));
+  await onSnapshot(q, (querySnapshot) => {
+   querySnapshot.docs.map(doc => ({
+     id: doc.id,
+     data: doc.data()
+   })
+   
+  )});
+
+}
+
+export const updateDocument = async (collectionRef, id, editedDoc) => {
+  const docToEdit = doc(db, collectionRef, id);
+
+  try{
+    await updateDoc(docToEdit, editedDoc);
+}catch (error){
+  console.log(error);
+}
+
+}
+
 
 
 
@@ -123,6 +151,13 @@ export {db};
 //   });
 // }
 
+
+// (new Note(
+//  doc.id,
+//  doc.data().title,
+//  doc.data().content,
+//  doc.data().created
+// ))
 
 
 export default firebase;

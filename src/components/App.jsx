@@ -1,61 +1,38 @@
 import React, { useState, useEffect } from "react";
-// import {useSelector, useDispatch} from "react-redux";
 import {GlobalStyle} from "../global-style";
 
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
-import {db} from '../firebase/firebase.js';
-import {collection, doc, addDoc, updateDoc, deleteDoc, Timestamp, query, orderBy, onSnapshot} from 'firebase/firestore'
-
-
+import {db, addDocument, getDocuments, deleteDocument, updateDocument} from '../firebase/firebase.js';
 
 const App = () => {
 
-  const [notes, setNotes] = useState([]);
-  // const [savedNotes, setSavedNotes] = useState([])
+  const [notes, setNotes] = useState([{title:"default", content:"default", id:"00000"}]);
+  const [collectionRef, setCollectionRef] = useState("main")
 
-  useEffect(() => {
-    const q = query(collection(db, 'main'), orderBy('created', 'desc'))
-    onSnapshot(q, (querySnapshot) => {
-      setNotes(querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        data: doc.data()
-      })));
+  // useEffect(() => {
+  //   getDocuments(collectionRef).then(setNotes({
+  //     id:
+  //   }));
+  //
+  // },[collectionRef]);
+  //
 
-    })
-  },[]);
-
-
-  const addNoteToFirebase = async (newNote) => {
-    const {title, content} = newNote;
-
-    try {
-      await addDoc(collection(db, 'main'), {
-         title: title,
-         content: content,
-         created: Timestamp.now()
-       });
-     } catch (err) {
-         console.log(err);
-     }
-
-  };
 
   const addNote = newNote => {
     console.log('Add Note');
-    addNoteToFirebase(newNote).then(res => {
+    addDocument(collectionRef, newNote).then(res => {
       console.log('Note was added');
     });
   }
 
 
-  const deleteNote = async (id) => {
-    const noteToDelete = doc(db, "main", id);
+  const deleteNote = async (id, collectionRef) => {
 
     try{
-      await deleteDoc(noteToDelete)
+      deleteDocument(id, collectionRef)
       .then(setNotes((prevNotes) => {
             return prevNotes.filter((note, index) => {
               return index !== id;
@@ -66,19 +43,12 @@ const App = () => {
     }
   }
 
-  const editNote = async (id, editedNote) => {
-    const {title, content} = editedNote;
-    const noteToEdit = doc(db, "main", id);
-
+  const editNote = async (collectionRef, id, editedNote) => {
     try{
-      await updateDoc(noteToEdit, {
-      title: title,
-      content: content
-    });
-  }catch (error){
-    console.log(error);
-  }
-
+      updateDocument(collectionRef, id, editedNote);
+    }catch (error){
+      console.log(error);
+    }
   }
 
 
@@ -87,13 +57,13 @@ const App = () => {
       <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
-      {notes.map((note, index) => {
+      {notes.map((note) => {
         return (
           <Note
-            key={index}
+            key={note.id}
             id={note.id}
-            title={note.data.title}
-            content={note.data.content}
+            title={note.title}
+            content={note.content}
             delete={deleteNote}
             edit={editNote}
           />
