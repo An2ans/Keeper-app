@@ -9,39 +9,38 @@ import {db, addDocument, getDocuments, deleteDocument, updateDocument} from '../
 
 const App = () => {
 
-  const [notes, setNotes] = useState([{title:"default", content:"default", id:"00000"}]);
+  const [notes, setNotes] = useState([]);
   const [collectionRef, setCollectionRef] = useState("main")
 
-  // useEffect(() => {
-  //   getDocuments(collectionRef).then(setNotes({
-  //     id:
-  //   }));
-  //
-  // },[collectionRef]);
-  //
+  useEffect(() => {
+    getSavedNotes(collectionRef);
+  },[collectionRef]);
+
+
+
+ const getSavedNotes = (collectionRef) => {
+   getDocuments(collectionRef)
+    .then((savedNotes) => {
+      setNotes(savedNotes);
+    });
+ }
 
 
   const addNote = newNote => {
-    console.log('Add Note');
-    addDocument(collectionRef, newNote).then(res => {
-      console.log('Note was added');
-    });
+    addDocument(collectionRef, newNote)
+      .then(getSavedNotes(collectionRef));
   }
 
 
-  const deleteNote = async (id, collectionRef) => {
-
-    try{
-      deleteDocument(id, collectionRef)
-      .then(setNotes((prevNotes) => {
-            return prevNotes.filter((note, index) => {
-              return index !== id;
-            });
-          }));
-    }catch (error){
-      console.log(error);
-    }
+  const deleteNote = (id) => {
+    deleteDocument(id, collectionRef)
+      .then(console.log(`note ${id} deleted`))
+      .then(getSavedNotes(collectionRef))
+      .catch(error =>{
+        console.log(error);
+      });
   }
+
 
   const editNote = async (collectionRef, id, editedNote) => {
     try{
@@ -58,7 +57,7 @@ const App = () => {
       <Header />
       <CreateArea onClick={addNote} />
       {notes.map((note) => {
-        return (
+        return(
           <Note
             key={note.id}
             id={note.id}

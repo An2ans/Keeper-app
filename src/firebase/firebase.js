@@ -30,26 +30,45 @@ export const addDocument = async (collectionRef, doc) => {
 };
 
 export const deleteDocument = async (id, collectionRef) => {
-  const docToDelete = doc(db, collectionRef, id);
   try{
-    await deleteDoc(docToDelete);
+    const docToDelete = await app.firestore().collection(collectionRef).doc(id);
+    await docToDelete.delete();
   }catch (error){
     console.log(error);
   }
 
 };
 
-export const getDocuments = async (collectionRef) => {
-  const q = query(collection(db, collectionRef), orderBy('created', 'desc'));
-  await onSnapshot(q, (querySnapshot) => {
-   querySnapshot.docs.map(doc => ({
-     id: doc.id,
-     data: doc.data()
-   })
-   
-  )});
 
+
+export async function getDocuments(collectionRef){
+  const snapshot = await firebase.firestore().collection(collectionRef).get();
+  return snapshot.docs.map(doc => ({
+          id: doc.id,
+          content: doc.data().content,
+          title: doc.data().title,
+          created: Timestamp.now()
+        }));
 }
+
+// export const getDocuments = async (collectionRef) => {
+//   try{
+//     const q = await query(collection(db, collectionRef), orderBy('created', 'desc'));
+//     await onSnapshot(q, (querySnapshot) => {
+//        querySnapshot.docs.map(doc => ({
+//         id: doc.id,
+//         content: doc.data().content,
+//         title: doc.data().title,
+//         created: Timestamp.now()
+//       }));
+//     });
+//
+//   }catch (error){
+//     console.log(error);
+//   }
+//
+// }
+
 
 export const updateDocument = async (collectionRef, id, editedDoc) => {
   const docToEdit = doc(db, collectionRef, id);
