@@ -21,6 +21,7 @@ function Note(props) {
 
     setEditedNote((prevValue) => {
       return {
+        ...prevValue,
         [name]: value
       };
     });
@@ -36,7 +37,7 @@ function Note(props) {
 
   const acceptEdit = () => {
     setEdit(false);
-    return props.edit(props.id, editedNote);
+    props.edit(props.id, editedNote);
 
   }
 
@@ -52,8 +53,8 @@ function Note(props) {
     {
       isEdit ? (
         <form >
-          <input name="title" onChange={handleChange} value={props.title} />
-          <input name="content" onChange={handleChange} value={props.content} />
+          <input name="title" onChange={handleChange} value={editedNote.title} />
+          <input name="content" onChange={handleChange} value={editedNote.content} />
           <Zoom in={true}>
           <Fab onClick={handleDelete} >
             <RefuseIcon />

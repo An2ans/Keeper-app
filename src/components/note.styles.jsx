@@ -35,3 +35,7 @@ margin-bottom: 10px;
 white-space: pre-wrap;
 word-wrap: break-word;
 `;
+
+export const EditNote = styled.input`
+
+`;

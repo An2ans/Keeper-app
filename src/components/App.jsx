@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import {GlobalStyle} from "../global-style";
-
+import defNotes from "../notes.js";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
@@ -21,7 +21,14 @@ const App = () => {
  const getSavedNotes = (collectionRef) => {
    getDocuments(collectionRef)
     .then((savedNotes) => {
-      setNotes(savedNotes);
+      if (savedNotes.length === 0){
+        defNotes.map(defNote => {
+          addNote(defNote)
+        })
+        setNotes(defNotes);
+      }else{
+        setNotes(savedNotes);
+      }
     });
  }
 
@@ -42,12 +49,14 @@ const App = () => {
   }
 
 
-  const editNote = async (collectionRef, id, editedNote) => {
-    try{
-      updateDocument(collectionRef, id, editedNote);
-    }catch (error){
-      console.log(error);
-    }
+  const editNote = async (id, editedNote) => {
+    updateDocument(collectionRef, id, editedNote)
+      .then(console.log(`note ${id} edited`))
+      .then(getSavedNotes(collectionRef))
+      .catch(error =>{
+        console.log(error);
+      });
+
   }
 
 

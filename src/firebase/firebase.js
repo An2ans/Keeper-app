@@ -71,10 +71,9 @@ export async function getDocuments(collectionRef){
 
 
 export const updateDocument = async (collectionRef, id, editedDoc) => {
-  const docToEdit = doc(db, collectionRef, id);
-
   try{
-    await updateDoc(docToEdit, editedDoc);
+    const docToUpdate = await app.firestore().collection(collectionRef).doc(id);
+    await updateDoc(docToUpdate, editedDoc);
 }catch (error){
   console.log(error);
 }
@@ -111,23 +110,6 @@ export const updateDocument = async (collectionRef, id, editedDoc) => {
 //   return userRef;
 // };
 
-
-// export const addNote = async (newNote) => {
-//   const {title, content} = newNote;
-//   try {
-//        await addDoc(collection(db, 'main'), {
-//          title: title,
-//          content: content,
-//          created: Timestamp.now()
-//        })
-//      } catch (err) {
-//        console.log(err);
-//      }
-// };
-
-// export const deleteNote
-//
-// export const fetchSavedNotes
 
 
 
