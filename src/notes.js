@@ -1,35 +1,16 @@
-const lists = [
+const defNotes = [
   {
-    key: 1,
-    title: 'Shopping list'
+    id: "0001",
+    key:"0001",
+    title: "Welcome to Keeper-app!",
+    content: "Here you can make, edit and delete notes. To make your first note just type something inside the top rectangle and click on the + button."
+  },
+  {
+    id: "0002",
+    key:"0002",
+    title: "Instructions:",
+    content: "To edit a note simply click on the pencil button, then modify the text and click on the same button to confirm changes. To delete a note click on the X button."
   }
-];
-const notes = [
-  {
-    key: 1,
-    list_id: 1,
-    title: "Delegation",
-    content:
-      "Q. How many programmers does it take to change a light bulb? A. None – It’s a hardware problem"
-  },
-  {
-    key: 2,
-    title: "Loops",
-    content:
-      "How to keep a programmer in the shower forever. Show him the shampoo bottle instructions: Lather. Rinse. Repeat."
-  },
-  {
-    key: 3,
-    title: "Arrays",
-    content:
-      "Q. Why did the programmer quit his job? A. Because he didn't get arrays."
-  },
-  {
-    key: 4,
-    title: "Hardware vs. Software",
-    content:
-      "What's the difference between hardware and software? You can hit your hardware with a hammer, but you can only curse at your software."
-  }
-];
+]
 
-export default notes;
+export default defNotes;

@@ -5,74 +5,90 @@ import Fab from "@material-ui/core/Fab";
 import { Zoom } from "@material-ui/core";
 import AcceptIcon from "@material-ui/icons/Check";
 import RefuseIcon from "@material-ui/icons/HighlightOff";
+import {NoteContainer, NoteTitle, NoteContent} from "./note.styles";
 
-//He añadido funcion de editar al cambiar la propiedad de contentEditable, puedo ditar la note pero los valores title y content no camban
-// Creo que necesito que esos valores en el hook cambien si quiero reverti0r los cambios, lo estoy intentando con la funcion handleChange pero no funka
+
 
 
 function Note(props) {
 
 
   const [isEdit, setEdit] = useState(false);
+  const [editedNote, setEditedNote] = useState({title:props.title, content:props.content});
 
+  function handleChange(event) {
+    const { name, value } = event.target;
+
+    setEditedNote((prevValue) => {
+      return {
+        ...prevValue,
+        [name]: value
+      };
+    });
+    console.log(editedNote);
+  }
 
   function handleEdit() {
-    if (isEdit === false){
-      setEdit(true);
-    }else if (isEdit === true){
+    setEdit(true);
+
+
     console.log("note to edit");
-    setEdit(false);
-  }}
-
-  function refuseEdit(){
-    console.log("edit refused");
-
-    setEdit(false);
   }
+
+  const acceptEdit = () => {
+    setEdit(false);
+    props.edit(props.id, editedNote);
+
+  }
+
 
   function handleDelete() {
     return props.delete(props.id);
   }
 
 
-if (isEdit === false){
 
-  return (
-    <div className="note">
-      <h1>{props.title}</h1>
-      <p>{props.content}</p>
-      <Zoom in={true}>
-      <Fab onClick={handleDelete}   >
-      <DeleteIcon />
-      </Fab>
-      </Zoom>
-      <Zoom in={true}>
-      <Fab onClick={handleEdit}   >
-      <EditIcon />
-      </Fab>
-      </Zoom>
-
-    </div>
-  );
-}else{
   return(
-    <div className="note">
-      <h1 contentEditable="true"   >{props.title}</h1>
-      <p contentEditable="true"   >{props.content}</p>
-      <Zoom in={true}>
-      <Fab onClick={refuseEdit} >
-      <RefuseIcon />
-      </Fab>
-      </Zoom>
-      <Zoom in={true}>
-      <Fab onClick= {handleEdit} >
-      <AcceptIcon />
-      </Fab>
-      </Zoom>
+    <NoteContainer>
+    {
+      isEdit ? (
+        <form >
+          <input name="title" onChange={handleChange} value={editedNote.title} />
+          <input name="content" onChange={handleChange} value={editedNote.content} />
+          <Zoom in={true}>
+          <Fab onClick={handleDelete} >
+            <RefuseIcon />
+          </Fab>
+          </Zoom>
+          <Zoom in={true}>
+          <Fab onClick= {acceptEdit} >
+            <AcceptIcon />
+          </Fab>
+          </Zoom>
+        </form>
 
-    </div>
+      ) : (
+        <form >
+          <NoteTitle name="title" onChange={handleChange} >{props.title}</NoteTitle>
+          <NoteContent name="content" onChange={handleChange} >{props.content}</NoteContent>
+          <Zoom in={true}>
+          <Fab onClick={handleDelete} >
+            <RefuseIcon />
+          </Fab>
+          </Zoom>
+          <Zoom in={true}>
+          <Fab onClick= {handleEdit} >
+            <EditIcon />
+          </Fab>
+          </Zoom>
+
+        </form>
+
+      )
+    }
+    </NoteContainer >
   );
 }
-}
+
 
 export default Note;
