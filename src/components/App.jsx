@@ -6,12 +6,12 @@ import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
 import {
-  db,
+  getAllDocuments,
   addDocument,
   getDocuments,
   deleteDocument,
   updateDocument,
-} from "../firebase/firebase.js";
+} from "../firebase/db.js";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
@@ -22,7 +22,7 @@ const App = () => {
   }, [collectionRef]);
 
   const getSavedNotes = (collectionRef) => {
-    getDocuments(collectionRef).then((savedNotes) => {
+    getAllDocuments(collectionRef).then((savedNotes) => {
       if (savedNotes.length === 0) {
         defNotes.map((defNote) => {
           addNote(defNote);

@@ -1,25 +1,18 @@
 import React from "react";
 import HeaderIcon from "@material-ui/icons/EventNote";
-import { Link } from "react-router-dom";
 
 function Header() {
   return (
-    <nav>
+    <header>
       <h1>
-        <Link to="/">
-          <HeaderIcon fontSize="large" /> Keeper-App
-        </Link>
+        <HeaderIcon fontSize="large" /> Keeper-App
       </h1>
 
       <ul>
-        <li>
-          <Link to="/login">Log In</Link>
-        </li>
-        <li>
-          <Link to="/sign-up">Sign-Up</Link>
-        </li>
+        <li>Log In</li>
+        <li>Sign-Up</li>
       </ul>
-    </nav>
+    </header>
   );
 }
 
