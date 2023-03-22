@@ -11,14 +11,23 @@ import {
   getDocuments,
   deleteDocument,
   updateDocument,
-} from "../firebase/db.js";
+} from "../firebase/dbService";
 
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [collectionRef, setCollectionRef] = useState("main");
 
   useEffect(() => {
-    getSavedNotes(collectionRef);
+    try {
+      const fetchedNotes = getAllDocuments(collectionRef);
+      if (fetchedNotes.length === 0) {
+        setNotes(defNotes);
+      } else {
+        setNotes(fetchedNotes);
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }, [collectionRef]);
 
   const getSavedNotes = (collectionRef) => {
@@ -61,18 +70,22 @@ const App = () => {
       <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
-      {notes.map((note) => {
-        return (
-          <Note
-            key={note.id}
-            id={note.id}
-            title={note.title}
-            content={note.content}
-            delete={deleteNote}
-            edit={editNote}
-          />
-        );
-      })}
+      {notes.length > 0 ? (
+        notes.map((note) => {
+          return (
+            <Note
+              key={note.id}
+              id={note.id}
+              title={note.title}
+              content={note.content}
+              delete={deleteNote}
+              edit={editNote}
+            />
+          );
+        })
+      ) : (
+        <h2>There are no notes to show</h2>
+      )}
       <Footer />
     </div>
   );

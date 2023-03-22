@@ -1,27 +1,44 @@
-import { app } from "./firebase";
-import { getFirestore, Timestamp } from "firebase-admin/firestore";
+import {
+  Timestamp,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 
-const db = getFirestore(app);
+import { db } from "./firebase";
 
-export { db };
-
-export const getAllDocuments = async (collection) => {
-  // const collectionRef = db.collection(collection);
-  // const data = await db.query(collection(db, collectionRef));
-  let documents = [];
-
-  const snapshot = await db.collection(collection).onSnapshot((docs) => {
-    docs.forEach((doc) => {
-      documents.push({
-        id: doc.id,
-        content: doc.data().content,
-        title: doc.data().title,
-        created: Timestamp.now(),
-      });
-    });
-    return documents;
+export const getAllDocuments = async (collectionRef) => {
+  const q = query(collection(db, collectionRef), orderBy("created", "desc"));
+  if (!q || !collectionRef) {
+    throw new Error("Unable to query this collection: " + collectionRef);
+  } else {
+    console.log(q);
+  }
+  onSnapshot(q, (querySnapshot) => {
+    let docs = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      title: doc.data().title,
+      content: doc.data().content,
+    }));
+    if (docs.length < 1) {
+      throw new Error("no documents found");
+    }
+    console.log(docs);
+    return docs;
   });
 };
+
+// export const getAllDocuments = async (collection) => {
+//   const snapshot = await db.collection(collection).get();
+//   const docs = snapshot.docs.map((doc) => ({
+//     id: doc.id,
+//     content: doc.data().content,
+//     title: doc.data().title,
+//     created: Timestamp.now(),
+//   }));
+//   return docs;
+// };
 
 // const getData = async () => {
 //         const data = await query(collection(firestore, "test_data"));
