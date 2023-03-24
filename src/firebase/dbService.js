@@ -12,8 +12,6 @@ export const getAllDocuments = async (collectionRef) => {
   const q = query(collection(db, collectionRef), orderBy("created", "desc"));
   if (!q || !collectionRef) {
     throw new Error("Unable to query this collection: " + collectionRef);
-  } else {
-    console.log(q);
   }
   onSnapshot(q, (querySnapshot) => {
     let docs = querySnapshot.docs.map((doc) => ({

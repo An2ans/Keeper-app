@@ -18,29 +18,43 @@ const App = () => {
   const [collectionRef, setCollectionRef] = useState("main");
 
   useEffect(() => {
-    try {
-      const fetchedNotes = getAllDocuments(collectionRef);
-      if (fetchedNotes.length === 0) {
-        setNotes(defNotes);
-      } else {
-        setNotes(fetchedNotes);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    getSavedNotes(collectionRef);
   }, [collectionRef]);
 
+  // try {
+  //   const fetchedNotes = getAllDocuments(collectionRef);
+  //   console.log(fetchedNotes);
+  //   if (fetchedNotes.length === 0) {
+  //     setNotes(defNotes);
+  //   } else {
+  //     setNotes(fetchedNotes);
+  //   }
+  // } catch (e) {
+  //   console.log(e);
+  // }
+
+  // getAllDocuments(collectionRef).then((savedNotes) => {
+
+  //   if (savedNotes.length === 0) {
+  //     defNotes.map((defNote) => {
+  //       addNote(defNote);
+  //     });
+  //     setNotes(defNotes);
+  //   } else {
+  //     setNotes(savedNotes);
+  //   }
+  // });
+
   const getSavedNotes = (collectionRef) => {
-    getAllDocuments(collectionRef).then((savedNotes) => {
-      if (savedNotes.length === 0) {
-        defNotes.map((defNote) => {
-          addNote(defNote);
-        });
-        setNotes(defNotes);
-      } else {
+    try {
+      getAllDocuments(collectionRef).then((savedNotes) => {
+        console.log(savedNotes);
         setNotes(savedNotes);
-      }
-    });
+        console.log(notes);
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const addNote = (newNote) => {
@@ -70,7 +84,7 @@ const App = () => {
       <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
-      {notes.length > 0 ? (
+      {/* {notes.length > 0 ? (
         notes.map((note) => {
           return (
             <Note
@@ -85,7 +99,7 @@ const App = () => {
         })
       ) : (
         <h2>There are no notes to show</h2>
-      )}
+      )} */}
       <Footer />
     </div>
   );
