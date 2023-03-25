@@ -8,7 +8,6 @@ import CreateArea from "./CreateArea";
 import {
   getAllDocuments,
   addDocument,
-  getDocuments,
   deleteDocument,
   updateDocument,
 } from "../firebase/dbService";
@@ -21,36 +20,22 @@ const App = () => {
     getSavedNotes(collectionRef);
   }, [collectionRef]);
 
-  // try {
-  //   const fetchedNotes = getAllDocuments(collectionRef);
-  //   console.log(fetchedNotes);
-  //   if (fetchedNotes.length === 0) {
-  //     setNotes(defNotes);
-  //   } else {
-  //     setNotes(fetchedNotes);
-  //   }
-  // } catch (e) {
-  //   console.log(e);
-  // }
-
-  // getAllDocuments(collectionRef).then((savedNotes) => {
-
-  //   if (savedNotes.length === 0) {
-  //     defNotes.map((defNote) => {
-  //       addNote(defNote);
-  //     });
-  //     setNotes(defNotes);
-  //   } else {
-  //     setNotes(savedNotes);
-  //   }
-  // });
-
   const getSavedNotes = (collectionRef) => {
+    let savedNotes;
     try {
-      getAllDocuments(collectionRef).then((savedNotes) => {
-        console.log(savedNotes);
-        setNotes(savedNotes);
-        console.log(notes);
+      getAllDocuments(collectionRef).then((response) => {
+        console.log({ response });
+
+        if (response.success) {
+          savedNotes = response.docs;
+          console.log({ savedNotes });
+          return savedNotes;
+        } else {
+          console.log("Unable to fetch the notes");
+        }
+
+        // setNotes([{ title: "manual", content: "test", id: "000" }]);
+        // console.log(notes);
       });
     } catch (err) {
       console.log(err);
@@ -84,7 +69,7 @@ const App = () => {
       <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
-      {/* {notes.length > 0 ? (
+      {notes.length > 0 ? (
         notes.map((note) => {
           return (
             <Note
@@ -99,7 +84,7 @@ const App = () => {
         })
       ) : (
         <h2>There are no notes to show</h2>
-      )} */}
+      )}
       <Footer />
     </div>
   );

@@ -10,6 +10,7 @@ import { db } from "./firebase";
 
 export const getAllDocuments = async (collectionRef) => {
   const q = query(collection(db, collectionRef), orderBy("created", "desc"));
+  const response = { success: Boolean, docs: [], message: String };
   if (!q || !collectionRef) {
     throw new Error("Unable to query this collection: " + collectionRef);
   }
@@ -23,8 +24,15 @@ export const getAllDocuments = async (collectionRef) => {
       throw new Error("no documents found");
     }
     console.log(docs);
-    return docs;
+
+    response.docs = docs;
+    response.success = true;
+    response.message = "notes successfully fetched";
+
+    console.log({ response });
   });
+
+  return response;
 };
 
 // export const getAllDocuments = async (collection) => {
