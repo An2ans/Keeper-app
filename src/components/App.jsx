@@ -12,34 +12,41 @@ import {
   updateDocument,
 } from "../firebase/dbService";
 
+import {
+  Timestamp,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  getDocs,
+} from "firebase/firestore";
+
+import { db } from "../firebase/firebase";
+
 const App = () => {
   const [notes, setNotes] = useState([]);
   const [collectionRef, setCollectionRef] = useState("main");
 
   useEffect(() => {
     getSavedNotes(collectionRef);
-  }, [collectionRef]);
+  }, []);
 
-  const getSavedNotes = (collectionRef) => {
-    let savedNotes;
-    try {
-      getAllDocuments(collectionRef).then((response) => {
-        console.log({ response });
+  const getSavedNotes = () => {
+    const q = query(collection(db, collectionRef), orderBy("created", "desc"));
 
-        if (response.success) {
-          savedNotes = response.docs;
-          console.log({ savedNotes });
-          return savedNotes;
-        } else {
-          console.log("Unable to fetch the notes");
-        }
-
-        // setNotes([{ title: "manual", content: "test", id: "000" }]);
-        // console.log(notes);
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    onSnapshot(q, (querySnapshot) => {
+      let docs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+        content: doc.data().content,
+      }));
+      if (docs.length > 0) {
+        setNotes(docs);
+        console.log("fetched notes from db");
+      } else {
+        setNotes(defNotes);
+      }
+    });
   };
 
   const addNote = (newNote) => {
