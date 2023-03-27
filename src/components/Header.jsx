@@ -8,10 +8,7 @@ function Header() {
         <HeaderIcon fontSize="large" /> Keeper-App
       </h1>
 
-      <ul>
-        <li>Log In</li>
-        <li>Sign-Up</li>
-      </ul>
+      <ul></ul>
     </header>
   );
 }
