@@ -5,16 +5,14 @@ import Fab from "@material-ui/core/Fab";
 import { Zoom } from "@material-ui/core";
 import AcceptIcon from "@material-ui/icons/Check";
 import RefuseIcon from "@material-ui/icons/HighlightOff";
-import {NoteContainer, NoteTitle, NoteContent} from "./note.styles";
-
-
-
+import { NoteContainer, NoteTitle, NoteContent } from "./note.styles";
 
 function Note(props) {
-
-
   const [isEdit, setEdit] = useState(false);
-  const [editedNote, setEditedNote] = useState({title:props.title, content:props.content});
+  const [editedNote, setEditedNote] = useState({
+    title: props.title,
+    content: props.content,
+  });
 
   function handleChange(event) {
     const { name, value } = event.target;
@@ -22,7 +20,7 @@ function Note(props) {
     setEditedNote((prevValue) => {
       return {
         ...prevValue,
-        [name]: value
+        [name]: value,
       };
     });
     console.log(editedNote);
@@ -31,64 +29,65 @@ function Note(props) {
   function handleEdit() {
     setEdit(true);
 
-
     console.log("note to edit");
   }
 
   const acceptEdit = () => {
     setEdit(false);
     props.edit(props.id, editedNote);
-
-  }
-
+  };
 
   function handleDelete() {
     return props.delete(props.id);
   }
 
-
-
-  return(
+  return (
     <NoteContainer>
-    {
-      isEdit ? (
-        <form >
-          <input name="title" onChange={handleChange} value={editedNote.title} />
-          <input name="content" onChange={handleChange} value={editedNote.content} />
+      {isEdit ? (
+        <form>
+          <input
+            name="title"
+            onChange={handleChange}
+            value={editedNote.title}
+          />
+          <input
+            name="content"
+            onChange={handleChange}
+            value={editedNote.content}
+          />
           <Zoom in={true}>
-          <Fab onClick={handleDelete} >
-            <RefuseIcon />
-          </Fab>
+            <Fab onClick={handleDelete}>
+              <RefuseIcon />
+            </Fab>
           </Zoom>
           <Zoom in={true}>
-          <Fab onClick= {acceptEdit} >
-            <AcceptIcon />
-          </Fab>
+            <Fab onClick={acceptEdit}>
+              <AcceptIcon />
+            </Fab>
           </Zoom>
         </form>
-
       ) : (
-        <form >
-          <NoteTitle name="title" onChange={handleChange} >{props.title}</NoteTitle>
-          <NoteContent name="content" onChange={handleChange} >{props.content}</NoteContent>
+        <form>
+          <NoteTitle name="title" onChange={handleChange}>
+            {props.title}
+          </NoteTitle>
+          <NoteContent name="content" onChange={handleChange}>
+            {props.content}
+          </NoteContent>
           <Zoom in={true}>
-          <Fab onClick={handleDelete} >
-            <RefuseIcon />
-          </Fab>
+            <Fab onClick={handleDelete}>
+              <RefuseIcon />
+            </Fab>
           </Zoom>
           <Zoom in={true}>
-          <Fab onClick= {handleEdit} >
-            <EditIcon />
-          </Fab>
+            <Fab onClick={handleEdit}>
+              <EditIcon />
+            </Fab>
           </Zoom>
-
         </form>
-
-      )
-    }
-    </NoteContainer >
+      )}
+    </NoteContainer>
   );
 }
-
 
 export default Note;

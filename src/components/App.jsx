@@ -69,7 +69,7 @@ const App = () => {
   // Edit an existing note
   const editNote = async (id, editedNote) => {
     let docRef = doc(db, collectionRef, id);
-    await setDoc(docRef, editedNote);
+    await setDoc(docRef, editedNote, { merge: true });
   };
 
   return (
