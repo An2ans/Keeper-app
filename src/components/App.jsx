@@ -1,87 +1,101 @@
 import React, { useState, useEffect } from "react";
-import {GlobalStyle} from "../global-style";
+import { GlobalStyle } from "../global-style";
 import defNotes from "../notes.js";
 import Header from "./Header";
 import Footer from "./Footer";
 import Note from "./Note";
 import CreateArea from "./CreateArea";
-import {db, addDocument, getDocuments, deleteDocument, updateDocument} from '../firebase/firebase.js';
+
+import {
+  Timestamp,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+  doc,
+  setDoc,
+  deleteDoc,
+} from "firebase/firestore";
+
+import { db } from "../firebase/firebase";
 
 const App = () => {
-
   const [notes, setNotes] = useState([]);
-  const [collectionRef, setCollectionRef] = useState("main")
+  const [collectionRef, setCollectionRef] = useState("main");
+  const [firstLogin, setFirstLogin] = useState(true);
 
   useEffect(() => {
     getSavedNotes(collectionRef);
-  },[collectionRef]);
+  }, [collectionRef]);
 
+  // Get saved notes from firestore or default notes from notes.js
+  const getSavedNotes = () => {
+    const q = query(collection(db, collectionRef), orderBy("created", "desc"));
 
-
- const getSavedNotes = (collectionRef) => {
-   getDocuments(collectionRef)
-    .then((savedNotes) => {
-      if (savedNotes.length === 0){
-        defNotes.map(defNote => {
-          addNote(defNote)
-        })
-        setNotes(defNotes);
-      }else{
-        setNotes(savedNotes);
+    onSnapshot(q, (querySnapshot) => {
+      let docs = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        title: doc.data().title,
+        content: doc.data().content,
+      }));
+      if (firstLogin && docs.length === 0) {
+        setFirstLogin(false);
+        defNotes.forEach((defNote) => {
+          addNote(defNote);
+        });
+      } else {
+        setNotes(docs);
       }
     });
- }
+  };
 
+  // Add a new note
+  const addNote = async (newNote) => {
+    //validation to avoid empty notes
+    if (newNote.content.length > 0) {
+      newNote.created = Timestamp.now();
+      let docRef = doc(collection(db, collectionRef));
+      await setDoc(docRef, newNote);
+      // console.log("New note added" + docRef.id);
+    }
+  };
 
-  const addNote = newNote => {
-    addDocument(collectionRef, newNote)
-      .then(getSavedNotes(collectionRef));
-  }
+  // Delete a note
+  const deleteNote = async (id) => {
+    let docRef = doc(db, collectionRef, id);
+    await deleteDoc(docRef);
+  };
 
-
-  const deleteNote = (id) => {
-    deleteDocument(id, collectionRef)
-      .then(console.log(`note ${id} deleted`))
-      .then(getSavedNotes(collectionRef))
-      .catch(error =>{
-        console.log(error);
-      });
-  }
-
-
+  // Edit an existing note
   const editNote = async (id, editedNote) => {
-    updateDocument(collectionRef, id, editedNote)
-      .then(console.log(`note ${id} edited`))
-      .then(getSavedNotes(collectionRef))
-      .catch(error =>{
-        console.log(error);
-      });
-
-  }
-
+    let docRef = doc(db, collectionRef, id);
+    await setDoc(docRef, editedNote, { merge: true });
+  };
 
   return (
     <div>
       <GlobalStyle />
       <Header />
       <CreateArea onClick={addNote} />
-      {notes.map((note) => {
-        return(
-          <Note
-            key={note.id}
-            id={note.id}
-            title={note.title}
-            content={note.content}
-            delete={deleteNote}
-            edit={editNote}
-          />
-        );
-      })}
+      {notes.length > 0 ? (
+        notes.map((note) => {
+          return (
+            <Note
+              key={note.id}
+              id={note.id}
+              title={note.title}
+              content={note.content}
+              delete={deleteNote}
+              edit={editNote}
+            />
+          );
+        })
+      ) : (
+        <h2>There are no notes to show</h2>
+      )}
       <Footer />
     </div>
   );
-
-}
-
+};
 
 export default App;
