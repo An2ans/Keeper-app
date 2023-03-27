@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import DeleteIcon from "@material-ui/icons/DeleteForeverOutlined";
 import EditIcon from "@material-ui/icons/Edit";
 import Fab from "@material-ui/core/Fab";
 import { Zoom } from "@material-ui/core";
 import AcceptIcon from "@material-ui/icons/Check";
 import RefuseIcon from "@material-ui/icons/HighlightOff";
 import { NoteContainer, NoteTitle, NoteContent } from "./note.styles";
+import { Input } from "@material-ui/core";
 
 function Note(props) {
   const [isEdit, setEdit] = useState(false);
@@ -23,13 +23,11 @@ function Note(props) {
         [name]: value,
       };
     });
-    console.log(editedNote);
+    // console.log(editedNote);
   }
 
   function handleEdit() {
     setEdit(true);
-
-    console.log("note to edit");
   }
 
   const acceptEdit = () => {
@@ -45,18 +43,37 @@ function Note(props) {
     <NoteContainer>
       {isEdit ? (
         <form>
-          <input
+          <Input
             name="title"
             onChange={handleChange}
             value={editedNote.title}
+            color="warning"
+            sx={{
+              fontSize: `1.1em`,
+              marginBottom: `6px`,
+            }}
           />
-          <input
+          <Input
             name="content"
             onChange={handleChange}
             value={editedNote.content}
+            type="text"
+            multiline
+            autoFocus
+            color="warning"
+            sx={{
+              fontSize: `1.1em`,
+              marginBottom: `10px`,
+              whiteSpace: `pre-wrap`,
+              wordWrap: `break-word`,
+            }}
           />
           <Zoom in={true}>
-            <Fab onClick={handleDelete}>
+            <Fab
+              onClick={() => {
+                setEdit(false);
+              }}
+            >
               <RefuseIcon />
             </Fab>
           </Zoom>

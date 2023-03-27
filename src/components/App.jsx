@@ -38,7 +38,7 @@ const App = () => {
         title: doc.data().title,
         content: doc.data().content,
       }));
-      if (firstLogin && docs.length == +0) {
+      if (firstLogin && docs.length === 0) {
         setFirstLogin(false);
         defNotes.forEach((defNote) => {
           addNote(defNote);
@@ -56,7 +56,7 @@ const App = () => {
       newNote.created = Timestamp.now();
       let docRef = doc(collection(db, collectionRef));
       await setDoc(docRef, newNote);
-      console.log("New note added" + docRef.id);
+      // console.log("New note added" + docRef.id);
     }
   };
 

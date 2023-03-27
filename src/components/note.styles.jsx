@@ -25,17 +25,13 @@ export const NoteContainer = styled.div`
 }`;
 
 export const NoteTitle = styled.h1`
-font-size: 1.1em;
-margin-bottom: 6px;
+  font-size: 1.1em;
+  margin-bottom: 6px;
 `;
 
 export const NoteContent = styled.p`
-font-size: 1.1em;
-margin-bottom: 10px;
-white-space: pre-wrap;
-word-wrap: break-word;
-`;
-
-export const EditNote = styled.input`
-
+  font-size: 1.1em;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 `;
